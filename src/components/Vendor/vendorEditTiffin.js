@@ -9,7 +9,7 @@ function EditTiffin() {
   const [price, setPrice] = useState("");
   const [imageLink, setImageLink] = useState("");
 
-  const handleAddTiffin = () => {
+  const handleEditTiffin = () => {
     try {
       const responsePromise = axios.patch(
         `${config.backendUrl}/api/Vendors/updatetiffin`,
