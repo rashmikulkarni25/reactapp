@@ -37,7 +37,7 @@ function VendorRegister() {
     } catch (error) {
       // Handle registration error
       console.error("Registration error:", error);
-      toast.success("Registration error!, Please try again!");
+      toast.error("Registration error!, Please try again!");
       setTimeout(() => {
         navigate("/vendor-register");
       }, 4000);
@@ -45,7 +45,7 @@ function VendorRegister() {
   };
 
   return (
-    <div className="container-tiffin">
+    <div className="containerCard">
       <center>
         <h1>Register</h1> <br />
         <input

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import config from "../../config";
 import { Card } from "react-bootstrap";
@@ -6,56 +6,68 @@ import "./styles.css";
 import { useNavigate } from "react-router-dom";
 import CardActions from "@mui/material/CardActions";
 import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { toast } from "react-toastify";
 
 function VendorTiffins(props) {
+  const vendorId = sessionStorage.getItem("vendorId");
   const [tiffins, setTiffins] = useState([]);
 
-  // useEffect(() => {
-  //   fetchTiffins();
-  // }, [fetchTiffins]);
-
-  const fetchTiffins = useCallback(() => {
-    try {
-      const responsePromise = axios.get(
-        `${config.backendUrl}/api/Vendors/mytiffins`,
-        {
-          params: {
-            vendorId: props.vendorId, // TODO: Replace with actual vendor ID
-          },
-        }
-      );
-
-      responsePromise.then((response) => {
-        setTiffins(response.data);
-      });
-    } catch (error) {}
-  }, [props.vendorId]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchTiffins();
-  }, [fetchTiffins]);
+    const responsePromise = axios.get(
+      `${config.backendUrl}/api/Vendors/mytiffins`,
+      {
+        params: {
+          vendorId: vendorId, // TODO: Replace with actual vendor ID
+        },
+      }
+    );
 
-  const navigate = useNavigate();
+    responsePromise
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("response.data: ", response.data);
+          setTiffins(response.data);
+          toast.success("Fetched tiffins successfully!");
+        } else {
+          console.log("Failed to get tiffins response: ", response);
+          toast.error("Failed to get tiffins!");
+        }
+      })
+      .catch((error) => {
+        console.log("Failed to add new tiffin!", error);
+        toast.error("Failed to add tiffin!");
+      });
+  }, [vendorId]);
+
   const addTiffin = () => {
-    // const history = useHistory();
     navigate("/vendor-addtiffin");
   };
 
-  const editTiffin = () => {
-    // const history = useHistory();
-    navigate("/vendor-edittiffin");
-  };
+  const editTiffin = (event) => {
+    const tiffinId = parseInt(event.target.getAttribute("data-tiffinId"));
+    console.log("edit-tiffin event : ", tiffinId);
+    const selectedTiffin = tiffins.find(
+      (tifItem) => tifItem.tiffinId === tiffinId
+    );
 
-  const deleteTiffin = () => {
-    navigate("/vendor-edittiffin");
+    console.log("selectedTiffin: ", selectedTiffin);
+    if (selectedTiffin) {
+      sessionStorage.setItem(
+        "selectedTiffinForEdit",
+        JSON.stringify(selectedTiffin)
+      );
+      navigate("/vendor-edittiffin");
+    } else {
+      toast.error("Failed to identify tiffin. Try select again!");
+    }
   };
 
   return (
     <center>
-      <div className="container-tiffin">
-        {/* <VendorTiffins vendorId={vendorId} /> */}
+      <div className="containerCard">
         <center>
           <h1>Tiffins</h1>
           <hr style={{ color: "greenyellow" }} />
@@ -66,7 +78,7 @@ function VendorTiffins(props) {
           <br />
           <br />
           <center>
-            <div className="card-container-tiffin">
+            <div className="card-containerCard">
               {tiffins.map((tiffin) => (
                 <center>
                   <Card
@@ -104,26 +116,15 @@ function VendorTiffins(props) {
                       <CardActions style={{ justifyContent: "center" }}>
                         <IconButton
                           aria-label="add to favorites"
+                          data-tiffinId={tiffin.tiffinId}
                           onClick={editTiffin}
                         >
-                          <EditIcon color="primary" />
-                        </IconButton>
-
-                        <IconButton aria-label="share" onClick={deleteTiffin}>
-                          <DeleteIcon color="error" />
+                          <EditIcon
+                            data-tiffinId={tiffin.tiffinId}
+                            color="primary"
+                          />
                         </IconButton>
                       </CardActions>
-
-                      {/* <Button
-                        variant="warning"
-                        onClick={editTiffin}
-                        style={{ marginRight: "25px" }}
-                      >
-                        Edit
-                      </Button>
-                      <Button variant="danger" onClick={deleteTiffin}>
-                        Delete
-                      </Button> */}
                     </Card.Body>
                   </Card>
                 </center>

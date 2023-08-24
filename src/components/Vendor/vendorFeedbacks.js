@@ -2,15 +2,17 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import config from "../../config";
 import { toast } from "react-toastify";
+//import { Card } from "react-bootstrap";
+import "./styles.css";
 
-function MyOrders(props) {
+function VendorFeedbacks(props) {
   const vendorId = sessionStorage.getItem("vendorId");
-  const [orders, setOrders] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
     try {
       const responsePromise = axios.get(
-        `${config.backendUrl}/api/Vendors/myorders`,
+        `${config.backendUrl}/api/Vendors/showfeedbacks`,
         {
           params: {
             vendorId: vendorId, //TODO: Replace with actual vendor ID
@@ -20,15 +22,15 @@ function MyOrders(props) {
 
       responsePromise.then((response) => {
         if (response.status === 200) {
-          setOrders(response.data);
+          setFeedbacks(response.data);
           console.log("response.data: ", response.data);
-          toast.success("Fetched your orders!");
+          toast.success("Fetched your feedbacks!");
         } else {
-          toast.error("Failed while getting vendor orders!");
+          toast.error("Failed while getting vendor feedbacks!");
         }
       });
     } catch (error) {
-      //TODO: Handle fetch orders error
+      //TODO: Handle fetch feedbacks error
       console.log("error: ", error);
     }
   }, [vendorId]);
@@ -36,22 +38,22 @@ function MyOrders(props) {
   return (
     <div className="containerCard">
       <center>
-        <h1>My Orders</h1>
+        <h1>Feedbacks and Complaints</h1>
       </center>
       <hr />
       <br />
       <ul>
-        {orders.map((order) => (
-          <li key={order.transactionId}>
-            <b>Order ID: {order.orderId}</b>
+        {feedbacks.map((feedback) => (
+          <li key={feedback.fcId}>
+            <b> Feedback ID: {feedback.fcId}</b>
             <br />
-            Customer: {order.customerName}
+            Customer: {feedback.customerName}
             <br />
-            Tiffin: {order.tiffinName}
+            Tiffin: {feedback.tiffinName}
             <br />
-            Quantity: {order.quantity}
+            Description: {feedback.feedbackDescription}
             <br />
-            Address: {order.customerHomeAddress}
+            Status: {feedback.feedbackStatus}
             <br />
             <br />
             <br />
@@ -62,4 +64,4 @@ function MyOrders(props) {
   );
 }
 
-export default MyOrders;
+export default VendorFeedbacks;

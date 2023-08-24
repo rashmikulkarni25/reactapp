@@ -37,14 +37,14 @@ function VendorLogin() {
         .catch((error) => {
           // Handle login error
           console.error("Invalid email or password!");
-          toast.success("Invalid email or password!");
+          toast.error("Invalid email or password!");
           setTimeout(() => {
             navigate("/vendor-login");
           }, 4000);
         });
     } catch (error) {
       console.error("An error occurred:", error);
-      toast.success("Invalid User! Please register!");
+      toast.error("Invalid User! Please register!");
       setTimeout(() => {
         navigate("/vendor-register");
       }, 4000);
@@ -52,7 +52,7 @@ function VendorLogin() {
   };
 
   return (
-    <div className="container-tiffin">
+    <div className="containerCard">
       <center>
         <h1>Login</h1> <br />
         <input

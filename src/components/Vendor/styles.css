@@ -74,12 +74,12 @@ input[type="submit"]:hover {
   flex: 1;
 }
 
-.container-tiffin {
+.containerCard {
   margin-top: 20px;
   color: darkgreen;
 }
 
-.card-container-tiffin {
+.card-containerCard {
   display: grid;
   gap: 1px;
   grid-template-columns: repeat(2, 1fr);
